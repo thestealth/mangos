@@ -396,21 +396,22 @@ void BattleGroundAB::_NodeDeOccupied(uint8 node)
         return;
 
     // Those who are waiting to resurrect at this node are taken to the closest own node's graveyard
-    std::vector<uint64> ghost_list = m_ReviveQueue[m_BgCreatures[node]];
-    if( !ghost_list.empty() )
+    std::vector<uint64> *ghost_list = &m_ReviveQueue[m_BgCreatures[node]];
+    if( !ghost_list->empty() )
     {
         WorldSafeLocsEntry const *ClosestGrave = NULL;
         Player *plr;
-        for (std::vector<uint64>::iterator itr = ghost_list.begin(); itr != ghost_list.end(); ++itr)
+        for (std::vector<uint64>::iterator itr = ghost_list->begin(); itr != ghost_list->end(); ++itr)
         {
-            plr = objmgr.GetPlayer(*ghost_list.begin());
+            plr = objmgr.GetPlayer(*ghost_list->begin());
             if( !plr )
                 continue;
             if( !ClosestGrave )
                 ClosestGrave = GetClosestGraveYard(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetTeam());
-            else
+            if( ClosestGrave ) //just for the case something goes wrong.. if you don't think so, make an assert instead of this if..
                 plr->TeleportTo(GetMapId(), ClosestGrave->x, ClosestGrave->y, ClosestGrave->z, plr->GetOrientation());
         }
+        ghost_list->clear();
     }
 
      if( m_BgCreatures[node] )
