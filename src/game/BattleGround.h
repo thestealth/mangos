@@ -359,7 +359,7 @@ class BattleGround
             O = m_TeamStartLocO[idx];
         }
 
-        uint32 GetLevelThroughQueueId(uint32 queue_id, uint32 bgTypeId) const;
+        uint32 GetLevelThroughQueueId(uint32 queue_id) const;
 
         /* Packet Transfer */
         // method that should fill worldpacket with actual world states (not yet implemented for all battlegrounds!)

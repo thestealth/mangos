@@ -708,7 +708,7 @@ void BattleGroundQueue::Update(uint32 bgTypeId, uint32 queue_id, uint8 arenatype
             sLog.outError("Battleground: couldn't create bg %u",bgTypeId);
             return;
         }
-        uint32 min_queue_level = GetLevelThroughQueueId(queue_id, bgTypeId);
+        uint32 min_queue_level = bg2->GetLevelThroughQueueId(queue_id);
         bg2->SetLevelRange(min_queue_level, min_queue_level+10);
         // start the joining of the bg
         bg2->SetStatus(STATUS_WAIT_JOIN);
