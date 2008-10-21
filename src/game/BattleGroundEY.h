@@ -27,6 +27,8 @@ class BattleGround;
 #define BG_EY_FLAG_RESPAWN_TIME   10000                     //10 seconds
 #define BG_EY_FPOINTS_TICK_TIME   2000                      //2 seconds
 
+const uint32 BG_EY_HONOR_SCORE_TICS[2] = { 330,200 }; //0=normal 1=bg-weekend
+
 enum BG_EY_WorldStates
 {
     EY_ALLIANCE_RESOURCES           = 2749,

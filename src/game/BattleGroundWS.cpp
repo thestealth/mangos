@@ -236,12 +236,8 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
         Source->RemoveAurasDueToSpell(BG_WS_SPELL_WARSONG_FLAG);
         message = GetMangosString(LANG_BG_WS_CAPTURED_HF);
         type = CHAT_MSG_BG_SYSTEM_ALLIANCE;
-        if(GetTeamScore(ALLIANCE) < BG_WS_MAX_TEAM_SCORE)
-            AddPoint(ALLIANCE, 1);
         PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_ALLIANCE);
-        RewardReputationToTeam(890, 35, ALLIANCE);          // +35 reputation
-        RewardHonorToTeam(40, ALLIANCE);                    // +40 bonushonor
-    }
+   }
     else
     {
         if (!this->IsAllianceFlagPickedup())
@@ -253,12 +249,12 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
         Source->RemoveAurasDueToSpell(BG_WS_SPELL_SILVERWING_FLAG);
         message = GetMangosString(LANG_BG_WS_CAPTURED_AF);
         type = CHAT_MSG_BG_SYSTEM_HORDE;
-        if(GetTeamScore(HORDE) < BG_WS_MAX_TEAM_SCORE)
-            AddPoint(HORDE, 1);
         PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_HORDE);
-        RewardReputationToTeam(889, 35, HORDE);             // +35 reputation
-        RewardHonorToTeam(40, HORDE);                       // +40 bonushonor
     }
+    if(GetTeamScore(Source->GetTeam()) < BG_WS_MAX_TEAM_SCORE) //this does not make much sense.. or?
+        AddPoint(Source->GetTeam(), 1);
+    RewardReputationToTeam((Source->GetTeam() == ALLIANCE)? 890 : 889, BG_WS_REPUTATION_CAPTURE_FLAG[GetBGWeekend()], Source->GetTeam());
+    RewardHonorToTeam(GetBonusHonorFromKill(2), Source->GetTeam());
 
     SpawnBGObject(BG_WS_OBJECT_H_FLAG, BG_WS_FLAG_RESPAWN_TIME);
     SpawnBGObject(BG_WS_OBJECT_A_FLAG, BG_WS_FLAG_RESPAWN_TIME);
@@ -280,6 +276,17 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
 
     if(winner)
     {
+        if(winner == ALLIANCE)
+            RewardHonorToTeam(GetBonusHonorFromKill(BG_WS_HONOR_WIN[GetBGWeekend()]),ALLIANCE); //win
+        RewardHonorToTeam(GetBonusHonorFromKill(BG_WS_HONOR_END),ALLIANCE); //complete
+        if(winner == HORDE)
+            RewardHonorToTeam(GetBonusHonorFromKill(BG_WS_HONOR_WIN[GetBGWeekend()]),HORDE); //win
+        RewardHonorToTeam(GetBonusHonorFromKill(BG_WS_HONOR_END),HORDE); //complete
+        if( GetBGWeekend() == 1 ) //i don't know why, but this gets applied seperatly (for honor_win i don't know)
+        {
+            RewardHonorToTeam(GetBonusHonorFromKill(BG_WS_HONOR_END),HORDE); //complete
+            RewardHonorToTeam(GetBonusHonorFromKill(BG_WS_HONOR_END),ALLIANCE); //complete
+        }
         UpdateWorldState(BG_WS_FLAG_UNK_ALLIANCE, 0);
         UpdateWorldState(BG_WS_FLAG_UNK_HORDE, 0);
         UpdateWorldState(BG_WS_FLAG_STATE_ALLIANCE, 1);

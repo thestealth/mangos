@@ -181,15 +181,15 @@ void BattleGroundAB::Update(time_t diff)
                 m_TeamScores[team] += BG_AB_TickPoints[points];
                 m_HonorScoreTics[team] += BG_AB_TickPoints[points];
                 m_ReputationScoreTics[team] += BG_AB_TickPoints[points];
-                if( m_ReputationScoreTics[team] >= 200 )
+                if( m_ReputationScoreTics[team] >= BG_AB_ReputationScoreTics[GetBGWeekend()] )
                 {
                     (team == BG_TEAM_ALLIANCE) ? RewardReputationToTeam(509, 10, ALLIANCE) : RewardReputationToTeam(510, 10, HORDE);
-                    m_ReputationScoreTics[team] -= 200;
+                    m_ReputationScoreTics[team] -= BG_AB_ReputationScoreTics[GetBGWeekend()];
                 }
-                if( m_HonorScoreTics[team] >= BG_HONOR_SCORE_TICKS )
+                if( m_HonorScoreTics[team] >= BG_AB_HonorScoreTics[GetBGWeekend()] )
                 {
-                    (team == BG_TEAM_ALLIANCE) ? RewardHonorToTeam(20, ALLIANCE) : RewardHonorToTeam(20, HORDE);
-                    m_HonorScoreTics[team] -= BG_HONOR_SCORE_TICKS;
+                    RewardHonorToTeam(GetBonusHonorFromKill(1),(team == BG_TEAM_ALLIANCE) ? ALLIANCE:HORDE);
+                    m_HonorScoreTics[team] -= BG_AB_HonorScoreTics[GetBGWeekend()];
                 }
                 if( !m_IsInformedNearVictory && m_TeamScores[team] > 1800 )
                 {
@@ -212,9 +212,19 @@ void BattleGroundAB::Update(time_t diff)
 
         // Test win condition
         if( m_TeamScores[BG_TEAM_ALLIANCE] >= 2000 )
+        {
+            RewardHonorToTeam(GetBonusHonorFromKill(1),ALLIANCE); //win
+            RewardHonorToTeam(GetBonusHonorFromKill(1),ALLIANCE); //complete
+            RewardHonorToTeam(GetBonusHonorFromKill(1),HORDE); //complete
             EndBattleGround(ALLIANCE);
+        }
         if( m_TeamScores[BG_TEAM_HORDE] >= 2000 )
+        {
+            RewardHonorToTeam(GetBonusHonorFromKill(1),HORDE); //win
+            RewardHonorToTeam(GetBonusHonorFromKill(1),HORDE); //complete
+            RewardHonorToTeam(GetBonusHonorFromKill(1),ALLIANCE); //complete
             EndBattleGround(HORDE);
+        }
     }
 }
 

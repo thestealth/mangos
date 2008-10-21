@@ -170,6 +170,10 @@ enum BG_AB_Sounds
     SOUND_NEAR_VICTORY                  = 8456
 };
 
+const uint32 BG_AB_HonorScoreTics[2] = { 330,200 }; //0=normal 1=bg-weekend
+const uint32 BG_AB_ReputationScoreTics[2] = { 200,150 }; //0=normal 1=bg-weekend
+
+
 // x, y, z, o
 const float BG_AB_NodePositions[BG_AB_DYNAMIC_NODES_COUNT][4] = {
     {1166.785f, 1200.132f, -56.70859f, 0.9075713f},         // stables

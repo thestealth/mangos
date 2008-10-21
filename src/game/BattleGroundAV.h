@@ -18,6 +18,20 @@
 
 #ifndef __BATTLEGROUNDAV_H
 #define __BATTLEGROUNDAV_H
+#define BG_AV_HONOR_TOWER   3
+#define BG_AV_HONOR CAPTAIN 3
+#define BG_AV_HONOR_GENERAL 4
+#define BG_AV_HONOR_END 4 // only at bg-weekend else 0 i got 4 on a weekend, but it was not alterac-weekend.. maybe you get 4 all the time
+const uint32 BG_AV_REPUTATION_TOWER[2] = { 12,18 };
+const uint32 BG_AV_REPUTATION_CAPTAIN[2] = { 125,185 };
+const uint32 BG_AV_REPUTATION_GENERAL[2] = { 350,525 };
+#define BG_AV_HONOR_END_CAPTAIN_LIVES = 2
+#define BG_AV_HONOR_END_TOWER_EXISTS  = 2
+//TODO: look if reputation is right
+//Per owned Graveyards      12        18
+//Live CAPTAIN              125       175
+//Per Undestroyed Tower       125        18
+//Per Owned Mine               24        36
 
 class BattleGround;
 

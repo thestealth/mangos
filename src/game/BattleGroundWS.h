@@ -25,6 +25,10 @@
 #define BG_WS_FLAG_RESPAWN_TIME   23000
 #define BG_WS_FLAG_DROP_TIME      10000
 
+const uint32 BG_WS_REPUTATION_CAPTURE_FLAG[2] = { 35,45 }; //0=normal 1=bg-weekend
+const uint32 BG_WS_HONOR_WIN[2] = { 1,3 }; //0=normal 1=bg-weekend
+const uint32 BG_WS_HONOR_END =  2;
+
 enum BG_WS_Sound
 {
     BG_WS_SOUND_FLAG_CAPTURED_ALLIANCE  = 8173,

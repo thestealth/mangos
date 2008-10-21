@@ -156,10 +156,10 @@ void BattleGroundEY::AddPoints(uint32 Team, uint32 Points)
     uint8 team_index = GetTeamIndexByTeamId(Team);
     m_TeamScores[team_index] += Points;
     m_HonorScoreTics[team_index] += Points;
-    if (m_HonorScoreTics[team_index] >= BG_HONOR_SCORE_TICKS)
+    if (m_HonorScoreTics[team_index] >= BG_EY_HONOR_SCORE_TICS[GetBGWeekend()] )
     {
-        RewardHonorToTeam(20, Team);
-        m_HonorScoreTics[team_index] -= BG_HONOR_SCORE_TICKS;
+        RewardHonorToTeam(GetBonusHonorFromKill(1), Team);
+        m_HonorScoreTics[team_index] -= BG_EY_HONOR_SCORE_TICS[GetBGWeekend()];
     }
     UpdateTeamScore(Team);
 }
@@ -295,6 +295,13 @@ void BattleGroundEY::UpdateTeamScore(uint32 Team)
     uint32 score = GetTeamScore(Team);
     if(score >= EY_MAX_TEAM_SCORE)
     {
+        if(Team == ALLIANCE)
+            RewardHonorToTeam(GetBonusHonorFromKill(1),ALLIANCE); //win
+        RewardHonorToTeam(GetBonusHonorFromKill(1),ALLIANCE); //complete
+        if(Team == HORDE)
+            RewardHonorToTeam(GetBonusHonorFromKill(1),HORDE); //win
+        RewardHonorToTeam(GetBonusHonorFromKill(1),HORDE); //complete
+
         score = EY_MAX_TEAM_SCORE;
         EndBattleGround(Team);
     }
