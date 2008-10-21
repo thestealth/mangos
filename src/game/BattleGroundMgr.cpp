@@ -278,45 +278,30 @@ void BattleGroundQueue::AddPlayer(Player *plr, GroupQueueInfo *ginfo)
     }*/
 }
 
-void BattleGroundQueue::RemovePlayer(uint64 guid, bool decreaseInvitedCount)
+void BattleGroundQueue::RemovePlayer(uint64 guid, bool decreaseInvitedCount, uint32 queue_id)
 {
-    Player *plr = objmgr.GetPlayer(guid);
-
-    uint32 queue_id = 0;
-    QueuedPlayersMap::iterator itr;
     GroupQueueInfo * group;
     QueuedGroupsList::iterator group_itr;
-    bool IsSet = false;
-    if(plr)
+    QueuedPlayersMap::iterator itr = m_QueuedPlayers[queue_id].find(guid);
+
+    if(itr == m_QueuedPlayers[queue_id].end())
     {
-        queue_id = plr->GetBattleGroundQueueIdFromLevel();
-
-        itr = m_QueuedPlayers[queue_id].find(guid);
-        if(itr != m_QueuedPlayers[queue_id].end())
-            IsSet = true;
-    }
-
-    if(!IsSet)
-    {                                                       
-        // either player is offline, or he levelled up to another queue category
-        // sLog.outError("Battleground: removing offline player from BG queue - this might not happen, but it should not cause crash");
+        //if the queue_id which was given to this function is wrong (maybe make an assert instead this.. cause this shouldn't happen)
         for (uint32 i = 0; i < MAX_BATTLEGROUND_QUEUES; i++)
         {
             itr = m_QueuedPlayers[i].find(guid);
             if(itr != m_QueuedPlayers[i].end())
             {
                 queue_id = i;
-                IsSet = true;
                 break;
             }
         }
-    }
-
-    // couldn't find the player in bg queue, return
-    if(!IsSet)
-    {
-        sLog.outError("Battleground: couldn't find player to remove.");
-        return;
+        // couldn't find the player in bg queue, return
+        if(itr == m_QueuedPlayers[queue_id].end())
+        {
+            sLog.outError("Battleground: couldn't find player to remove.");
+            return;
+        }
     }
 
     group = itr->second.GroupInfo;
@@ -384,7 +369,7 @@ void BattleGroundQueue::RemovePlayer(uint64 guid, bool decreaseInvitedCount)
                 plr2->GetSession()->SendPacket(&data);
             }
             // then actually delete, this may delete the group as well!
-            RemovePlayer(group->Players.begin()->first,decreaseInvitedCount);
+            RemovePlayer(group->Players.begin()->first,decreaseInvitedCount,queue_id);
         }
     }
 }
@@ -533,7 +518,7 @@ void BattleGroundQueue::BGEndedRemoveInvites(BattleGround *bg)
                 {
                     plr->RemoveBattleGroundQueueId(bgQueueTypeId);
                     // remove player from queue, this might delete the ginfo as well! don't use that pointer after this!
-                    RemovePlayer(itr2->first, true);
+                    RemovePlayer(itr2->first, true, bgQueueTypeId);
                     // this is probably unneeded, since this player was already invited -> does not fit when initing eligible groups
                     // but updateing the queue can't hurt
                     Update(bgQueueTypeId, bg->GetQueueType());
@@ -967,7 +952,7 @@ bool BGQueueRemoveEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
         if (qMapItr != sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].m_QueuedPlayers[plr->GetBattleGroundQueueIdFromLevel()].end() && qMapItr->second.GroupInfo && qMapItr->second.GroupInfo->IsInvitedToBGInstanceGUID == m_BgInstanceGUID)
         {
             plr->RemoveBattleGroundQueueId(bgQueueTypeId);
-            sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].RemovePlayer(m_PlayerGuid, true);
+            sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].RemovePlayer(m_PlayerGuid, true, plr->GetBattleGroundQueueId(queueSlot));
             sBattleGroundMgr.m_BattleGroundQueues[bgQueueTypeId].Update(bgQueueTypeId, bg->GetQueueType());
             WorldPacket data;
             sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, m_PlayersTeam, queueSlot, STATUS_NONE, 0, 0);
