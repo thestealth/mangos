@@ -1499,3 +1499,13 @@ uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team) const
     }
     return count;
 }
+
+uint32 BattleGround::GetLevelThroughQueueId(uint32 queue_id, uint32 bgTypeId) const
+{
+    //this function reverses Player::GetBattleGroundQueueIdFromLevel
+
+    assert(bgTypeId < MAX_BATTLEGROUND_TYPES);
+    BattleGround *bg = sBattleGroundMgr.GetBattleGroundTemplate(bgTypeId);
+    assert(bg); //shouldn't happen.. else just return 0
+    return (queue_id*10)+bg->GetMinLevel();
+}

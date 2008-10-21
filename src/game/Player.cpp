@@ -17556,8 +17556,8 @@ uint32 Player::GetMaxLevelForBattleGroundQueueId(uint32 queue_id)
 uint32 Player::GetBattleGroundQueueIdFromLevel(uint32 bgTypeId) const
 {
     assert(bgTypeId < MAX_BATTLEGROUND_TYPES);
-    BattleGround *bg = sBattleGroundMgr.GetBattleGround(bgTypeId); //i hope i don't fetch a bg-instance with this.. the idea is to fetch the levelinformation about bg with bgTypeId - if there's another way to do so, please tell me..
-    assert(bg);
+    BattleGround *bg = sBattleGroundMgr.GetBattleGroundTemplate(bgTypeId);
+    assert(bg); //shouldn't happen.. else just return 0
     return (((getLevel()-bg->GetMinLevel()))/10);
 }
 
