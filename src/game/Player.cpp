@@ -17553,15 +17553,12 @@ uint32 Player::GetMaxLevelForBattleGroundQueueId(uint32 queue_id)
     return 10*(queue_id+2)-1;
 }
 
-uint32 Player::GetBattleGroundQueueIdFromLevel() const
+uint32 Player::GetBattleGroundQueueIdFromLevel(uint32 bgTypeId) const
 {
-    uint32 level = getLevel();
-    if(level <= 19)
-        return 0;
-    else if (level > 69)
-        return 6;
-    else
-        return level/10 - 1;                                // 20..29 -> 1, 30-39 -> 2, ...
+    assert(bgTypeId < MAX_BATTLEGROUND_TYPES);
+    BattleGround *bg = sBattleGroundMgr.GetBattleGround(bgTypeId); //i hope i don't fetch a bg-instance with this.. the idea is to fetch the levelinformation about bg with bgTypeId - if there's another way to do so, please tell me..
+    assert(bg);
+    return (((getLevel()-bg->GetMinLevel()))/10);
 }
 
 float Player::GetReputationPriceDiscount( Creature const* pCreature ) const
