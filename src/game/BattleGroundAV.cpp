@@ -280,6 +280,11 @@ void BattleGroundAV::Update(time_t diff)
         if (!(m_Events & 0x01))
         {
             m_Events |= 0x01;
+            if(!SetupBattleGround())
+            {
+                EndNow();
+                return;
+            }
 
             uint16 i;
             sLog.outDebug("Alterac Valley: entering state STATUS_WAIT_JOIN ...");
