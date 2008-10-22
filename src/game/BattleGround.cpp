@@ -27,6 +27,7 @@
 #include "ArenaTeam.h"
 #include "World.h"
 #include "Util.h"
+#include "Formulas.h"
 
 BattleGround::BattleGround()
 {
@@ -592,38 +593,9 @@ uint8 BattleGround::GetBGWeekend() const
     }
 }
 
-float GetHackyBonushonor(uint32 lvl)
+uint16 BattleGround::GetBonusHonorFromKill(uint32 kills ) const
 {
-    switch(lvl)
-    {
-        case 70:
-            return 20.9;
-        case 69:
-            return 20.1;
-        case 60:
-            return 14.1;
-        case 59:
-            return 13.5;
-        case 49:
-            return 9.0;
-        case 39:
-            return 6.0;
-        case 29:
-            return 4.0;
-        case 19:
-            return 3.0;
-        default:
-            sLog.outError("GetHackyBonushonor received strange level %i", lvl);
-            return 1.0;
-    }
-}
-
-uint16 BattleGround::GetBonusHonorFromKill(uint16 kills ) const
-{
-    //TODO: wait for arrai until he implements better bonushonor-values see http://getmangos.com/community/showthread.php?t=744
-    //until now i use gethackybonushonor (:
-    float honor = GetHackyBonushonor(GetMaxLevel());
-    return int(round(honor*kills));
+    return MaNGOS::Honor::hk_honor_at_level(GetMaxLevel(), kills);
 }
 
 uint32 BattleGround::GetBattlemasterEntry() const

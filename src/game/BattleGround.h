@@ -284,7 +284,7 @@ class BattleGround
         uint8 GetArenaType() const          { return m_ArenaType; }
         uint8 GetWinner() const             { return m_Winner; }
         uint32 GetBattlemasterEntry() const;
-        uint16 GetBonusHonorFromKill(uint16 kills ) const;
+        uint16 GetBonusHonorFromKill(uint32 kills ) const;
 
         // Set methods:
         void SetName(char const* Name)      { m_Name = Name; }
